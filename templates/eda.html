@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Preview & Feature Engineering</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb; /* Very light gray background (gray-50) */
+            color: #1f2937; /* Darker gray text */
+            line-height: 1.6;
+        }
+        header {
+            background-color: #111827; /* Deep charcoal (gray-900) */
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            padding: 2.5rem; /* Increased padding */
+            margin-bottom: 2rem;
+        }
+        .btn-primary {
+            background-color: #0d9488; /* Teal 600 */
+            color: white;
+            padding: 14px 32px; /* Increased padding for a more substantial feel */
+            border-radius: 10px; /* Slightly more rounded */
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3); /* Enhanced shadow */
+            display: inline-flex; /* For better centering of text */
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-primary:hover {
+            background-color: #0f766e; /* Teal 700 */
+            transform: translateY(-3px); /* More pronounced lift effect */
+            box-shadow: 0 8px 20px rgba(13, 148, 136, 0.4); /* Stronger shadow on hover */
+        }
+        .btn-primary:active {
+            transform: translateY(0); /* Press down effect */
+            box-shadow: 0 2px 5px rgba(13, 148, 136, 0.2);
+        }
+
+        .btn-secondary {
+            background-color: #4b5563; /* Gray 700 */
+            color: white;
+            padding: 14px 32px; /* Increased padding */
+            border-radius: 10px; /* Slightly more rounded */
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(75, 85, 99, 0.3);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-secondary:hover {
+            background-color: #374151; /* Gray 800 */
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(75, 85, 99, 0.4);
+        }
+        .btn-secondary:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(75, 85, 99, 0.2);
+        }
+
+        .data-table-container {
+            overflow-x: auto;
+            border-radius: 12px; /* More rounded corners */
+            border: 1px solid #d1d5db; /* Lighter border (gray-300) */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px; /* Ensure table doesn't shrink too much */
+        }
+        .data-table th, .data-table td {
+            padding: 14px 20px; /* More padding */
+            border: 1px solid #e5e7eb; /* Gray 200 */
+            text-align: left;
+        }
+        .data-table th {
+            background-color: #f3f4f6; /* Light gray (gray-100) */
+            font-weight: 700; /* Bolder headers */
+            color: #374151; /* Darker text for headers (gray-700) */
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+        }
+        .data-table tr:nth-child(even) {
+            background-color: #f9fafb; /* Very light gray (gray-50) */
+        }
+        .data-table tr:hover {
+            background-color: #e0f2f2; /* Light teal hover effect (teal-100) */
+        }
+        footer {
+            background-color: #111827; /* Deep charcoal (gray-900) */
+            color: #d1fae5; /* Light teal text (teal-100) */
+            padding: 1.5rem 0;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        /* Styles for the dropdown (select) elements */
+        select {
+            appearance: none; /* Remove default browser styling */
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center; /* Adjust position of the arrow */
+            background-size: 1.5em 1.5em; /* Size of the arrow */
+            padding-right: 2.5rem; /* Make space for the custom arrow */
+            border: 1px solid #d1d5db; /* Gray 300 border */
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+            transition: all 0.2s ease-in-out; /* Smooth transitions */
+        }
+        select:hover {
+            border-color: #9ca3af; /* Gray 400 on hover */
+        }
+        select:focus {
+            outline: none; /* Remove default focus outline */
+            border-color: #10b981; /* Teal 500 on focus */
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); /* Teal focus ring */
+        }
+
+        /* AI Assistant specific styles */
+        .chat-button {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: #0d9488; /* Teal 600 */
+            color: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        .chat-button:hover {
+            background-color: #0f766e; /* Teal 700 */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(13, 148, 136, 0.5);
+        }
+        .chat-modal {
+            position: fixed;
+            bottom: 90px;
+            right: 2rem;
+            width: 350px;
+            height: 450px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 999;
+            transform: scale(0.95); /* Slightly smaller initially */
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease-in-out;
+        }
+        .chat-modal.active {
+            transform: scale(1);
+            opacity: 1;
+            visibility: visible;
+        }
+        .chat-header {
+            background-color: #111827; /* Deep charcoal */
+            color: white;
+            padding: 1rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+        .chat-body {
+            flex-grow: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            background-color: #f3f4f6; /* Light gray for chat background */
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .chat-message {
+            max-width: 80%;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            word-wrap: break-word;
+        }
+        .chat-message.user {
+            background-color: #d1fae5; /* Light teal for user messages */
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+        .chat-message.ai {
+            background-color: #e5e7eb; /* Light gray for AI messages */
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+        /* Basic Markdown styling for rendered content */
+        .chat-message.ai p {
+            margin-bottom: 0.5em;
+        }
+        .chat-message.ai ul {
+            list-style-type: disc;
+            margin-left: 1.5em;
+            margin-bottom: 0.5em;
+        }
+        .chat-message.ai ol {
+            list-style-type: decimal;
+            margin-left: 1.5em;
+            margin-bottom: 0.5em;
+        }
+        .chat-message.ai h1, .chat-message.ai h2, .chat-message.ai h3 {
+            font-weight: bold;
+            margin-top: 1em;
+            margin-bottom: 0.5em;
+        }
+        .chat-message.ai h1 { font-size: 1.5em; }
+        .chat-message.ai h2 { font-size: 1.3em; }
+        .chat-message.ai h3 { font-size: 1.1em; }
+
+
+        .chat-input-area {
+            display: flex;
+            padding: 1rem;
+            border-top: 1px solid #e5e7eb;
+            background-color: white;
+        }
+        .chat-input {
+            flex-grow: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            margin-right: 0.5rem;
+            font-size: 0.9rem;
+        }
+        .chat-input:focus {
+            outline: none;
+            border-color: #0d9488;
+            box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.2);
+        }
+        .chat-send-button {
+            background-color: #0d9488;
+            color: white;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        .chat-send-button:hover {
+            background-color: #0f766e;
+        }
+        .chat-send-button:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+        .close-button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+        }
+        .loading-indicator {
+            align-self: flex-start;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            background-color: #e5e7eb;
+            color: #4b5563;
+            font-style: italic;
+        }
+        /* Style for ML results */
+        #mlResults {
+            background-color: #e0f7fa; /* Light cyan */
+            border: 1px solid #00bcd4; /* Cyan border */
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #006064; /* Darker cyan text */
+            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.15);
+        }
+        #mlResults h3 {
+            font-weight: 700;
+            color: #004d40; /* Dark green for heading */
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        #mlResults p {
+            margin-bottom: 0.5rem;
+        }
+        #mlResults strong {
+            color: #00796b; /* Medium green for strong text */
+        }
+        .hyperparameter-input {
+            margin-top: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            width: 100%;
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+    <header>
+        <div class="container flex justify-between items-center">
+            <h1 class="text-2xl font-bold">Insightify</h1>
+            <nav>
+                <a href="/" class="text-teal-200 hover:text-white transition duration-300">Upload New Data</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow py-8">
+        <div class="container">
+            <div class="card text-center">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-4">Data Preview for <span class="text-teal-600">{{ filename }}</span></h2>
+                <p class="text-lg text-gray-600 mb-8">
+                    Here's a glimpse of the first 5 rows of your uploaded dataset.
+                </p>
+
+                <div class="data-table-container mb-10">
+                    {% for table in tables %}
+                        {{ table | safe }}
+                    {% endfor %}
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                    <a href="/eda/{{ filename }}" class="btn-primary">
+                        Generate Full EDA Report
+                    </a>
+                    <a href="/" class="btn-secondary">
+                        Upload Another File
+                    </a>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-4 text-center">Feature Engineering</h2>
+                <p class="text-lg text-gray-600 mb-8 text-center">
+                    Select the transformations you wish to apply to your dataset.
+                </p>
+
+                <form action="/transform/{{ filename }}" method="post" class="space-y-8">
+                    <div>
+                        <label class="block text-gray-800 text-base font-semibold mb-2" for="null_option">
+                            Handle Missing Values:
+                        </label>
+                        <select name="null_option" id="null_option" class="block w-full px-4 py-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition duration-200">
+                            <option value="">No action</option>
+                            <option value="drop">Drop rows with any missing values</option>
+                            <option value="mean">Impute numerical with Mean</option>
+                            <option value="median">Impute numerical with Median</option>
+                            <option value="mode">Impute categorical/numerical with Mode</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-800 text-base font-semibold mb-2" for="outlier_option">
+                            Handle Outliers:
+                        </label>
+                        <select name="outlier_option" id="outlier_option" class="block w-full px-4 py-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition duration-200">
+                            <option value="">No action</option>
+                            <option value="cap">Cap outliers (IQR method)</option>
+                            <option value="remove">Remove rows with outliers (IQR method)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-800 text-base font-semibold mb-2" for="encoding_option">
+                            Encode Categorical Features:
+                        </label>
+                        <select name="encoding_option" id="encoding_option" class="block w-full px-4 py-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition duration-200">
+                            <option value="">No action</option>
+                            <option value="onehot">One-Hot Encoding</option>
+                            <option value="label">Label Encoding</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-800 text-base font-semibold mb-2" for="scaling_option">
+                            Scale Numerical Features:
+                        </label>
+                        <select name="scaling_option" id="scaling_option" class="block w-full px-4 py-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition duration-200">
+                            <option value="">No action</option>
+                            <option value="standard">Standard Scaling (Z-score)</option>
+                            <option value="minmax">Min-Max Scaling</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-primary w-full mt-6">
+                        Apply Transformations & Download
+                    </button>
+                </form>
+            </div>
+
+            <!-- New Card for Machine Learning -->
+            <div class="card">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-4 text-center">Machine Learning</h2>
+                <p class="text-lg text-gray-600 mb-8 text-center">
+                    Train and evaluate a basic machine learning model on your dataset.
+                </p>
+
+                <div class="space-y-8">
+                    <div>
+                        <label class="block text-gray-800 text-base font-semibold mb-2" for="target_column">
+                            Select Target Column:
+                        </label>
+                        <select name="target_column" id="target_column" class="block w-full px-4 py-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition duration-200">
+                            <option value="">Select a column</option>
+                            {% for column in column_names %}
+                                <option value="{{ column }}">{{ column }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-800 text-base font-semibold mb-2" for="model_type">
+                            Select Model Type:
+                        </label>
+                        <select name="model_type" id="model_type" class="block w-full px-4 py-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition duration-200">
+                            <option value="">Select model type</option>
+                            <!-- Regression Models -->
+                            <optgroup label="Regression Models">
+                                <option value="linear_regression">Linear Regression</option>
+                                <option value="decision_tree_regressor">Decision Tree Regressor</option>
+                                <option value="random_forest_regressor">Random Forest Regressor</option>
+                                <option value="knn_regressor">K-Nearest Neighbors Regressor</option>
+                            </optgroup>
+                            <!-- Classification Models -->
+                            <optgroup label="Classification Models">
+                                <option value="decision_tree_classifier">Decision Tree Classifier</option>
+                                <option value="random_forest_classifier">Random Forest Classifier</option>
+                                <option value="knn_classifier">K-Nearest Neighbors Classifier</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <!-- Hyperparameter Inputs (initially hidden) -->
+                    <div id="hyperparametersSection" class="space-y-4 hidden">
+                        <h4 class="text-lg font-semibold text-gray-700">Model Hyperparameters (Optional):</h4>
+                        <div id="hpInputs">
+                            <!-- Hyperparameter inputs will be dynamically added here by JavaScript -->
+                        </div>
+                    </div>
+
+                    <button type="button" id="trainModelBtn" class="btn-primary w-full mt-6">
+                        Train Model & Show Metrics
+                    </button>
+
+                    <!-- ML Results Display Area -->
+                    <div id="mlResults" class="hidden">
+                        <h3>Model Evaluation Results:</h3>
+                        <div id="metricsContent"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Insightify. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- AI Assistant Chat Button -->
+    <div id="chatButton" class="chat-button">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+        </svg>
+    </div>
+
+    <!-- AI Assistant Chat Modal -->
+    <div id="chatModal" class="chat-modal">
+        <div class="chat-header">
+            <span>AI Assistant</span>
+            <button class="close-button" onclick="toggleChat()">×</button>
+        </div>
+        <div id="chatBody" class="chat-body">
+            <!-- Chat messages will be appended here -->
+            <div class="chat-message ai">Hello! I'm your AI assistant. How can I help you with your data today?</div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Ask me anything...">
+            <button id="chatSendButton" class="chat-send-button" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <!-- Marked.js CDN for Markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <script>
+        const chatButton = document.getElementById('chatButton');
+        const chatModal = document.getElementById('chatModal');
+        const chatBody = document.getElementById('chatBody');
+        const chatInput = document.getElementById('chatInput');
+        const chatSendButton = document.getElementById('chatSendButton');
+
+        chatButton.addEventListener('click', toggleChat);
+        chatInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        function toggleChat() {
+            chatModal.classList.toggle('active');
+            if (chatModal.classList.contains('active')) {
+                chatInput.focus();
+                chatBody.scrollTop = chatBody.scrollHeight; // Scroll to bottom
+            }
+        }
+
+        async function sendMessage() {
+            const userMessage = chatInput.value.trim();
+            if (userMessage === '') return;
+
+            console.log('User message:', userMessage); // DEBUG: Log user message
+
+            // Display user message
+            appendMessage(userMessage, 'user');
+            chatInput.value = '';
+            chatBody.scrollTop = chatBody.scrollHeight; // Scroll to bottom
+
+            // Show loading indicator
+            const loadingMessage = appendMessage('Thinking...', 'ai', 'loading-indicator');
+            chatSendButton.disabled = true; // Disable send button
+
+            try {
+                // Hardcode the URL for local development to bypass blob:// issues
+                const apiUrl = 'http://127.0.0.1:5000/ask_ai'; // Explicitly hardcode for local Flask server
+                console.log('Constructed API URL:', apiUrl); // DEBUG: Log the full URL
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: userMessage })
+                });
+
+                console.log('Fetch response received:', response); // DEBUG: Log fetch response object
+
+                if (!response.ok) {
+                    const errorText = await response.text(); // Get raw error response
+                    console.error('HTTP error response text:', errorText); // DEBUG: Log error text
+                    throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+                }
+
+                const data = await response.json();
+                console.log('AI response data:', data); // DEBUG: Log AI response data
+                
+                // Remove loading indicator
+                chatBody.removeChild(loadingMessage);
+
+                // Display AI response, rendering Markdown
+                appendMessage(data.response, 'ai', 'markdown-content'); // Add a class for potential specific styling
+            } catch (error) {
+                console.error('Error fetching AI response:', error); // DEBUG: Log detailed error
+                // Remove loading indicator
+                if (chatBody.contains(loadingMessage)) {
+                    chatBody.removeChild(loadingMessage);
+                }
+                appendMessage('Oops! Something went wrong. Please try again.', 'ai');
+            } finally {
+                chatSendButton.disabled = false; // Re-enable send button
+                chatBody.scrollTop = chatBody.scrollHeight; // Scroll to bottom
+            }
+        }
+
+        // ML Model Training Logic
+        const trainModelBtn = document.getElementById('trainModelBtn');
+        const targetColumnSelect = document.getElementById('target_column');
+        const modelTypeSelect = document.getElementById('model_type');
+        const mlResultsDiv = document.getElementById('mlResults');
+        const metricsContentDiv = document.getElementById('metricsContent');
+        const hyperparametersSection = document.getElementById('hyperparametersSection');
+        const hpInputsDiv = document.getElementById('hpInputs');
+
+        // Define hyperparameters for each model type
+        const modelHyperparameters = {
+            'decision_tree_classifier': [{ name: 'max_depth', type: 'number', placeholder: 'e.g., 5' }],
+            'random_forest_classifier': [
+                { name: 'n_estimators', type: 'number', placeholder: 'e.g., 100' },
+                { name: 'max_depth', type: 'number', placeholder: 'e.g., 10' }
+            ],
+            'knn_classifier': [{ name: 'n_neighbors', type: 'number', placeholder: 'e.g., 5' }],
+            'decision_tree_regressor': [{ name: 'max_depth', type: 'number', placeholder: 'e.g., 5' }],
+            'random_forest_regressor': [
+                { name: 'n_estimators', type: 'number', placeholder: 'e.g., 100' },
+                { name: 'max_depth', type: 'number', placeholder: 'e.g., 10' }
+            ],
+            'knn_regressor': [{ name: 'n_neighbors', type: 'number', placeholder: 'e.g., 5' }]
+            // Linear Regression has no common hyperparameters for basic tuning
+        };
+
+        modelTypeSelect.addEventListener('change', () => {
+            const selectedModel = modelTypeSelect.value;
+            hpInputsDiv.innerHTML = ''; // Clear previous inputs
+
+            if (modelHyperparameters[selectedModel]) {
+                hyperparametersSection.classList.remove('hidden');
+                modelHyperparameters[selectedModel].forEach(hp => {
+                    const inputGroup = document.createElement('div');
+                    inputGroup.classList.add('mb-2'); // Add some margin
+                    inputGroup.innerHTML = `
+                        <label for="${hp.name}" class="block text-gray-700 text-sm font-medium mb-1">${hp.name.replace('_', ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}:</label>
+                        <input type="${hp.type}" id="${hp.name}" name="${hp.name}" placeholder="${hp.placeholder}" class="hyperparameter-input">
+                    `;
+                    hpInputsDiv.appendChild(inputGroup);
+                });
+            } else {
+                hyperparametersSection.classList.add('hidden');
+            }
+        });
+
+
+        trainModelBtn.addEventListener('click', async () => {
+            const targetColumn = targetColumnSelect.value;
+            const modelType = modelTypeSelect.value;
+            const filename = "{{ filename }}"; // Get filename from Flask context
+
+            if (!targetColumn || !modelType) {
+                alert('Please select both a target column and a model type.');
+                return;
+            }
+
+            // Collect hyperparameters
+            const hyperparameters = {};
+            if (modelHyperparameters[modelType]) {
+                modelHyperparameters[modelType].forEach(hp => {
+                    const inputElement = document.getElementById(hp.name);
+                    if (inputElement && inputElement.value.trim() !== '') {
+                        hyperparameters[hp.name] = inputElement.value.trim();
+                    }
+                });
+            }
+
+            // Show loading or clear previous results
+            metricsContentDiv.innerHTML = '<p class="text-center text-gray-600">Training model...</p>';
+            mlResultsDiv.classList.remove('hidden');
+
+            try {
+                const response = await fetch(`http://127.0.0.1:5000/train_model/${filename}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        target_column: targetColumn,
+                        model_type: modelType,
+                        hyperparameters: hyperparameters // Pass hyperparameters
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Display metrics
+                    let metricsHtml = '<ul>';
+                    // Check for error in result from backend
+                    if (result.error) {
+                        metricsHtml = `<p class="text-red-600">Error: ${result.error}</p>`;
+                    } else {
+                        for (const key in result) {
+                            // Format numbers to 4 decimal places, handle non-numeric values gracefully
+                            const value = typeof result[key] === 'number' ? result[key].toFixed(4) : result[key];
+                            // Special handling for 'Hyperparameters Used' to display as a nested list
+                            if (key === 'Hyperparameters Used' && typeof result[key] === 'object') {
+                                metricsHtml += `<li><strong>${key.replace('_', ' ')}:</strong><ul>`;
+                                for (const hpKey in result[key]) {
+                                    metricsHtml += `<li>${hpKey}: ${result[key][hpKey]}</li>`;
+                                }
+                                metricsHtml += `</ul></li>`;
+                            } else {
+                                metricsHtml += `<li><strong>${key.replace('_', ' ')}:</strong> ${value}</li>`;
+                            }
+                        }
+                    }
+                    metricsHtml += '</ul>';
+                    metricsContentDiv.innerHTML = metricsHtml;
+                } else {
+                    // Display error from backend (HTTP error)
+                    metricsContentDiv.innerHTML = `<p class="text-red-600">Error: ${result.error || 'Unknown error during model training.'}</p>`;
+                }
+            } catch (error) {
+                console.error('Error training model:', error);
+                metricsContentDiv.innerHTML = `<p class="text-red-600">Failed to train model. Please check console for details.</p>`;
+            }
+        });
+
+
+        function appendMessage(text, ...types) { // Use rest parameter to accept multiple class arguments
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('chat-message'); // Always add base class
+            types.forEach(cls => { // Iterate over each provided class
+                if (cls) messageDiv.classList.add(cls);
+            });
+
+            // If it's an AI message, render Markdown
+            if (types.includes('ai') && !types.includes('loading-indicator')) { // Exclude loading message from markdown rendering
+                messageDiv.innerHTML = marked.parse(text); // Use marked.js to parse Markdown
+            } else {
+                messageDiv.textContent = text;
+            }
+            
+            chatBody.appendChild(messageDiv);
+            return messageDiv;
+        }
+    </script>
+</body>
+</html>

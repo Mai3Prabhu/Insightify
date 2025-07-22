@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insightify - Upload Data</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb; /* Very light gray background (gray-50) */
+            color: #1f2937; /* Darker gray text */
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background-color: #111827; /* Deep charcoal (gray-900) */
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative; /* Needed for absolute positioning of icon */
+        }
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center the content horizontally */
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        /* Removed .header-icon styles as the icon is removed */
+
+        @media (max-width: 640px) { /* Adjust for smaller screens */
+            .header-content {
+                padding: 0 1rem;
+            }
+            .header-content h1 {
+                font-size: 1.5rem; /* Smaller title on mobile */
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            width: 100%; /* Ensure container takes full width on smaller screens */
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            padding: 2.5rem; /* Increased padding */
+            margin-bottom: 2rem;
+        }
+        .btn-primary {
+            background-color: #0d9488; /* Teal 600 */
+            color: white;
+            padding: 14px 32px; /* Increased padding for a more substantial feel */
+            border-radius: 10px; /* Slightly more rounded */
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3); /* Enhanced shadow */
+            display: inline-flex; /* For better centering of text */
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-primary:hover {
+            background-color: #0f766e; /* Teal 700 */
+            transform: translateY(-3px); /* More pronounced lift effect */
+            box-shadow: 0 8px 20px rgba(13, 148, 136, 0.4); /* Stronger shadow on hover */
+        }
+        .btn-primary:active {
+            transform: translateY(0); /* Press down effect */
+            box-shadow: 0 2px 5px rgba(13, 148, 136, 0.2);
+        }
+        .file-input-label {
+            display: flex; /* Use flexbox for centering content */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 60px 20px; /* Adjusted vertical padding for a more square look */
+            border: 2px dashed #9ca3af; /* Gray 400 */
+            border-radius: 12px; /* More rounded */
+            background-color: #f9fafb; /* Gray 50 */
+            transition: all 0.2s ease-in-out;
+            text-align: center;
+            width: 100%; /* Ensure it takes full width */
+            max-width: 448px; /* Constrain width to Tailwind's max-w-md */
+            margin-left: auto; /* Center the block */
+            margin-right: auto; /* Center the block */
+        }
+        .file-input-label:hover {
+            border-color: #6b7280; /* Gray 500 */
+            background-color: #e0f2f2; /* Light teal hover */
+        }
+        .file-input-label input[type="file"] {
+            display: none;
+        }
+        footer {
+            background-color: #111827; /* Deep charcoal (gray-900) */
+            color: #d1fae5; /* Light teal text (teal-100) */
+            padding: 1.5rem 0;
+            text-align: center;
+            margin-top: auto; /* Push footer to the bottom */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1 class="text-2xl font-bold">Insightify</h1>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center py-8">
+        <!-- Hero Section -->
+        <section class="text-center py-16 px-4 bg-gradient-to-r from-gray-50 to-gray-100 w-full mb-8">
+            <h1 class="text-5xl sm:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
+                Unlock the Power of Your Data
+            </h1>
+            <p class="text-xl sm:text-2xl text-gray-700 mb-10 max-w-3xl mx-auto">
+                Instantly generate comprehensive Exploratory Data Analysis (EDA) reports and apply advanced Feature Engineering techniques with ease.
+            </p>
+            <a href="#upload-section" class="btn-primary text-lg">
+                Get Started - Upload Your Data
+            </a>
+        </section>
+
+        <!-- Features Section -->
+        <section class="container py-12">
+            <h2 class="text-4xl font-bold text-gray-800 text-center mb-12">What We Offer</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card text-center p-6">
+                    <div class="text-teal-600 mb-4">
+                        <svg class="w-10 h-10 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Automated EDA Reports</h3>
+                    <p class="text-gray-600">
+                        Get instant, insightful reports with statistics, visualizations, and data quality checks.
+                    </p>
+                </div>
+                <div class="card text-center p-6">
+                    <div class="text-teal-600 mb-4">
+                        <svg class="w-10 h-10 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Powerful Feature Engineering</h3>
+                    <p class="text-gray-600">
+                        Apply common transformations like handling missing values, encoding, and scaling.
+                    </p>
+                </div>
+                <div class="card text-center p-6">
+                    <div class="text-teal-600 mb-4">
+                        <svg class="w-10 h-10 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">User-Friendly Interface</h3>
+                    <p class="text-gray-600">
+                        Intuitive design makes data analysis and preparation accessible to everyone.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="container py-12">
+            <h2 class="text-4xl font-bold text-gray-800 text-center mb-12">How It Works</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div class="p-6">
+                    <div class="text-teal-600 text-5xl font-bold mb-4">1</div>
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-3">Upload Your Data</h3>
+                    <p class="text-gray-600">
+                        Simply drag and drop your CSV or Excel file, or click to browse and select it.
+                    </p>
+                </div>
+                <div class="p-6">
+                    <div class="text-teal-600 text-5xl font-bold mb-4">2</div>
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-3">Analyze & Transform</h3>
+                    <p class="text-gray-600">
+                        View a data preview, generate a full EDA report, and select feature engineering options.
+                    </p>
+                </div>
+                <div class="p-6">
+                    <div class="text-teal-600 text-5xl font-bold mb-4">3</div>
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-3">Download Results</h3>
+                    <p class="text-gray-600">
+                        Download your transformed dataset or the detailed EDA report.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Upload Section (Existing form, now with an ID) -->
+        <section id="upload-section" class="container card text-center py-12">
+            <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-6">Ready to Get Started?</h2>
+            <p class="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
+                Upload your dataset below to begin your data analysis journey.
+            </p>
+
+            <form action="/upload" method="post" enctype="multipart/form-data" class="space-y-8">
+                <div class="flex flex-col items-center justify-center">
+                    <label for="file-upload" class="file-input-label">
+                        <svg class="w-10 h-10 text-gray-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 0115.9 6L16 6a3 3 0 013 3v10a2 2 0 01-2 2H7a2 2 0 01-2-2v-1a1 1 0 011-1h1zm-1-7a3 3 0 00-3 3v1a1 1 0 01-1 1H4a1 1 0 01-1-1v-1a3 3 0 00-3-3V7a3 3 0 00-3-3h-1a1 1 0 01-1-1V4a1 1 0 011-1h1a3 3 0 003-3h1a1 1 0 011-1v1a1 1 0 01-1 1h-1a3 3 0 00-3-3h-1a1 1 0 01-1-1V1a1 1 0 011-1h1a3 3 0 003-3zM15 10a3 3 0 00-3-3h-1a1 1 0 01-1-1V5a1 1 0 011-1h1a3 3 0 003-3h1a1 1 0 011-1v1a1 1 0 01-1 1h-1a3 3 0 00-3-3h-1a1 1 0 01-1-1V1a1 1 0 011-1h1a3 3 0 003-3z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                        </svg>
+                        <span id="file-name" class="text-lg text-gray-700 font-medium mb-2">Drag & Drop your file here, or Click to Browse</span>
+                        <span class="text-gray-500 text-sm">(CSV or Excel files accepted)</span>
+                        <input type="file" name="file" id="file-upload" accept=".csv, .xls, .xlsx" onchange="updateFileName(this)">
+                    </label>
+                </div>
+                <button type="submit" class="btn-primary w-full sm:w-auto">
+                    Upload & Start Analysis
+                </button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Insightify. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        function updateFileName(input) {
+            const fileNameSpan = document.getElementById('file-name');
+            if (input.files && input.files.length > 0) {
+                fileNameSpan.textContent = `File selected: ${input.files[0].name}`;
+            } else {
+                fileNameSpan.textContent = 'Drag & Drop your file here, or Click to Browse';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+# Python virtual environment
+venv/
+env/
+
+# Uploads folder (where CSVs and reports are saved)
+uploads/
+
+# Python cache files
+__pycache__/
+*.pyc
+
+# IDE specific files (e.g., VS Code)
+.vscode/
+
+# Flask specific
+.flaskenv
+
+# Environment variables file (if you use one for API keys)
+.env
