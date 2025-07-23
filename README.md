@@ -30,14 +30,15 @@ Insightify is designed to streamline the initial, often time-consuming, phases o
 This application is ideal for data enthusiasts, students, or anyone looking for a quick and intuitive way to prepare and analyze their datasets for machine learning tasks.
 
 # Features
-1. Automated Exploratory Data Analysis (EDA)
+
+**1. Automated Exploratory Data Analysis (EDA)**
 Generate rich, interactive HTML reports that provide deep insights into your dataset's structure, distributions, missing values, and correlations with a single click.
 
 ![Insightify Landing Page - Placeholder](images/eda_report_snippet.jpg)
 
 ![Insightify Landing Page - Placeholder](images/eda_Report.jpg)
 
-2. Powerful Feature Engineering
+**2. Powerful Feature Engineering**
 Prepare your data for machine learning models by applying essential transformations directly through the UI.
 - Handle Missing Values: Choose strategies like dropping rows, or imputing with mean, median, or mode.
 - Handle Outliers: Cap or remove outliers using the Interquartile Range (IQR) method.
@@ -46,7 +47,7 @@ Prepare your data for machine learning models by applying essential transformati
 
 ![Insightify Landing Page - Placeholder](images/feature_engineering.jpg)
 
-3. Basic Machine Learning Model Training
+**3. Basic Machine Learning Model Training**
 Train and evaluate common machine learning models on your prepared dataset.
 
 Model Selection: Choose from:
@@ -60,13 +61,15 @@ Classifier, K-Nearest Neighbors Classifier.
 
 ![Insightify Landing Page - Placeholder](images/ml.jpg)
 
-4. Intelligent AI Assistant
+**4. Intelligent AI Assistant**
 Get instant help and explanations about Insightify's features, data analysis concepts, and machine learning guidance directly within the application.
 
 ![Insightify Landing Page - Placeholder](images/Ai_assistant.jpg)
 
 # How to Run Locally
+
 Follow these steps to set up and run Insightify on your local machine:
+
 **1. Clone the Repository:**
 ```
 git clone https://github.com/Mai3Prabhu/Insightify.git
@@ -103,20 +106,20 @@ pip install -r requirements.txt
 
 The AI Assistant feature requires a Gemini API key.
 
-1. Go to Google AI Studio or the Google Cloud Console.
-2. Create a new API key.
-3. Important: 
+**1. Go to Google AI Studio or the Google Cloud Console.**
+**2. Create a new API key.**
+**3. Important:**
 Open app.py in your project and replace "YOUR_GEMINI_API_KEY" with your actual key:
 
-In app.py
+**4. In app.py**
 ```
 api_key = "YOUR_GEMINI_API_KEY"
 ```
-5. Run the Flask Application:
+**5. Run the Flask Application:**
 ```
 python app.py
 ```
-6. Access the Application:
+**6. Access the Application:**
 
 Open your web browser and go to: http://127.0.0.1:5000/
 
